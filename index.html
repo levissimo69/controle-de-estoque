@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8"> <!-- Define a codificação para caracteres especiais -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ajusta para telas mobile -->
+    <title>Login</title> <!-- Título da página -->
+    <link rel="stylesheet" href="style.css"> <!-- Importa o arquivo de estilo -->
+</head>
+
+<body>
+    <!-- Container central onde fica o formulário -->
+    <div class="container">
+
+        <h1>Entrar</h1> <!-- Título principal da página -->
+        <p>Faça seu login com seu usuário e senha</p> <!-- Texto explicativo -->
+
+        <!-- Formulário que envia para estoque.html ao clicar no botão -->
+        <form action="estoque.html" method="post" class="form">
+
+            <!-- Campo de usuário com limite de 20 caracteres -->
+            <input type="text" placeholder="Usuário" maxlength="20">
+
+            <!-- Campo de senha com limite de 10 caracteres -->
+            <input type="password" placeholder="Senha" maxlength="10">
+
+            <!-- Botão para acessar -->
+            <button type="submit">Entrar</button>
+
+        </form>
+
+        <!-- Link para quem não tem conta ir para a página de cadastro -->
+        <p class="link">
+            Não tem conta?
+            <a href="cadastro.html">Cadastre-se</a>
+        </p>
+
+    </div>
+</body>
+</html>

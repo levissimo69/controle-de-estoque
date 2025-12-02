@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de Estoque</title>
+
+<style>
+
+/* --- paleta profissional --- */
+:root{
+    --bg:#e8eef7;             /* Azul claro elegante */
+    --card:#ffffff;           /* Cartão branco */
+    --accent:#1e40af;         /* Azul profundo corporativo */
+    --accent-light:#3b82f6;   /* Azul moderno */
+    --accent-dark:#1e3a8a;    /* Azul escuro */
+    --text:#111827;           /* Texto escuro */
+    --muted:#6b7280;
+    --danger:#dc2626;
+}
+
+/* --- estilo geral --- */
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial, Helvetica, sans-serif;}
+
+body{
+    background:var(--bg);
+    padding:25px;
+    color:var(--text);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:22px;
+    font-size:28px;
+    color:var(--accent-dark);
+    font-weight:900;
+}
+
+/* --- layout --- */
+.container{
+    max-width:1100px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:22px;
+}
+
+/* --- cartôes --- */
+.card{
+    background:var(--card);
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.1);
+}
+
+/* --- form e botôes --- */
+input,button,select{
+    width:100%;
+    padding:12px;
+    margin-top:6px;
+    border-radius:8px;
+    border:1px solid #cbd5e1;
+    font-size:15px;
+}
+
+button{
+    background:var(--accent);
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+    border:0;
+    transition:0.2s;
+}
+
+button:hover{
+    background:var(--accent-dark);
+    transform:translateY(-1px);
+}
+
+/* --- tabela --- */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #e2e8f0;
+    font-size:15px;
+}
+
+th{
+    color:var(--accent);
+    text-align:left;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.actions button{
+    padding:6px 8px;
+    font-size:12px;
+    margin-right:4px;
+}
+
+.badge{
+    display:inline-block;
+    padding:4px 7px;
+    border-radius:6px;
+    background:var(--danger);
+    color:white;
+    font-size:11px;
+}
+</style>
+</head>
+<body>
+
+<h1>Sistema de Controle de Estoque</h1>
+
+<div class="container">
+
+    <!-- lista de produtos -->
+    <div class="card">
+        <h3 style="color:var(--accent-dark);margin-bottom:10px;">Produtos</h3>
+
+        <input id="search" placeholder="Pesquisar produto..." style="border-color:var(--accent-light)">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Qtd</th>
+                    <th>Mínimo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+
+    <!-- formulário -->
+    <div class="card">
+        <h3 style="color:var(--accent-dark);">Novo Produto</h3>
+
+        <label>Nome</label>
+        <input id="name">
+
+        <label>Quantidade</label>
+        <input id="qty" type="number" min="0" value="0">
+
+        <label>Quantidade mínima</label>
+        <input id="min" type="number" min="0" value="5">
+
+        <button onclick="addProduct()">Adicionar Produto</button>
+    </div>
+</div>
+
+<script>
+let products = JSON.parse(localStorage.getItem("estoque_v2") || "[]");
+
+function save(){ localStorage.setItem("estoque_v2", JSON.stringify(products)); }
+
+function render(){
+    let tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
+    let search = document.getElementById("search").value.toLowerCase();
+
+    products.forEach(p=>{
+        if(!p.name.toLowerCase().includes(search)) return;
+
+        let tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${p.name} ${p.qty <= p.min ? "<span class='badge'>Baixo</span>" : ""}</td>
+            <td>${p.qty}</td>
+            <td>${p.min}</td>
+            <td class="actions">
+                <button onclick="alter('${p.id}',1)">+ Entrada</button>
+                <button onclick="alter('${p.id}',-1)">- Saída</button>
+                <button onclick="removeP('${p.id}')">Excluir</button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+
+function addProduct(){
+    let name = document.getElementById("name").value.trim();
+    let qty = Number(document.getElementById("qty").value);
+    let min = Number(document.getElementById("min").value);
+
+    if(name === "") return alert("Digite um nome!");
+
+    products.push({
+        id: Math.random().toString(36).substr(2,9),
+        name,
+        qty,
+        min
+    });
+
+    save();  
+    render();
+
+    document.getElementById("name").value="";
+    document.getElementById("qty").value=0;
+    document.getElementById("min").value=5;
+}
+
+function alter(id, type){
+    let p = products.find(x=>x.id === id);
+    if(!p) return;
+
+    let value = prompt(type>0 ? "Quantidade de entrada:" : "Quantidade de saída:");
+    if(value === null) return;
+
+    let n = Number(value);
+    if(isNaN(n) || n <= 0) return alert("Número inválido!");
+
+    if(type < 0 && n > p.qty) return alert("Quantidade insuficiente!");
+
+    p.qty += n * type;
+    save();
+    render();
+}
+
+function removeP(id){
+    if(!confirm("Excluir produto?")) return;
+    products = products.filter(p=>p.id !== id);
+    save();
+    render();
+}
+
+document.getElementById("search").addEventListener("input", render);
+
+render();
+</script>
+
+</body>
+</html>

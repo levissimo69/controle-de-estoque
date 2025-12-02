@@ -1,0 +1,93 @@
+/* Resetando margens, espaçamentos e ajustando o box-sizing */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo geral do corpo da página */
+body {
+    font-family: Arial, sans-serif; /* Fonte padrão */
+    background: linear-gradient(135deg, #007bff, #00c6ff); /* Fundo em degradê azul */
+    display: flex; /* Ativa o flexbox */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    height: 100vh; /* Altura da página inteira */
+    margin: 0; /* Remove margens */
+}
+
+/* Caixa principal do formulário */
+.container {
+    background-color: white; /* Fundo branco */
+    padding: 40px; /* Espaçamento interno */
+    border-radius: 15px; /* Bordas arredondadas */
+    box-shadow: 0 0 15px rgba(0,0,0,0.2); /* Sombra suave */
+    width: 320px; /* Largura fixa */
+    text-align: center; /* Alinha texto ao centro */
+}
+
+/* Estilo do título */
+h1 {
+    margin-bottom: 10px; /* Espaço abaixo do título */
+    color: #333; /* Cor do texto */
+}
+
+/* Estilo do parágrafo */
+p {
+    color: #555; /* Cor mais suave */
+}
+
+/* Organiza os inputs em coluna */
+.form {
+    display: flex; /* Flexbox */
+    flex-direction: column; /* Organiza verticalmente */
+    gap: 10px; /* Espaço entre os inputs */
+    margin-top: 15px; /* Espaço acima */
+}
+
+/* Estilo básico dos inputs */
+input {
+    padding: 10px; /* Espaçamento interno */
+    border: 1px solid #ccc; /* Borda cinza */
+    border-radius: 8px; /* Bordas arredondadas */
+    outline: none; /* Tira a borda azul padrão */
+    transition: .3s; /* Suaviza animações */
+}
+
+/* Efeito ao selecionar o input */
+input:focus {
+    border-color: #007bff; /* Borda azul ao focar */
+}
+
+/* Estilo do botão */
+button {
+    background-color: #007bff; /* Fundo azul */
+    color: white; /* Texto branco */
+    border: none; /* Remove borda padrão */
+    border-radius: 8px; /* Bordas arredondadas */
+    padding: 10px; /* Espaçamento interno */
+    font-size: 16px; /* Tamanho da fonte */
+    cursor: pointer; /* Cursor de clique */
+    transition: .3s; /* Suaviza animação */
+}
+
+/* Efeito ao passar o mouse no botão */
+button:hover {
+    background-color: #0056b3; /* Azul mais escuro */
+}
+
+/* Área do link (ex: "Já tem conta?") */
+.link {
+    margin-top: 15px; /* Espaço acima */
+}
+
+/* Estilo do link */
+.link a {
+    color: #007bff; /* Azul */
+    text-decoration: none; /* Remove sublinhado */
+}
+
+/* Efeito ao passar o mouse */
+.link a:hover {
+    text-decoration: underline; /* Sublinha ao passar o mouse */
+}

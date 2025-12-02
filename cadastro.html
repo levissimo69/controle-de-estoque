@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8"> <!-- Permite acentuação e caracteres especiais -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ajusta para celulares -->
+    <title>Cadastro</title> <!-- Título da aba -->
+    <link rel="stylesheet" href="style.css"> <!-- Importa o estilo da página -->
+</head>
+
+<body>
+    <!-- Container central do formulário -->
+    <div class="container">
+
+        <h1>Crie sua conta</h1> <!-- Título principal -->
+        <p>Preencha os dados corretamente</p> <!-- Texto explicativo -->
+
+        <!-- Formulário que envia para estoque.html após cadastrar -->
+        <form action="estoque.html" method="post" class="form">
+
+            <!-- Campo do nome completo (obrigatório) -->
+            <input type="text" placeholder="Nome completo" required>
+
+            <!-- Campo de e-mail com limite e obrigatório -->
+            <input type="email" placeholder="E-mail" maxlength="20" required>
+
+            <!-- Campo de usuário com limite de 16 caracteres -->
+            <input type="text" placeholder="Usuário" maxlength="16">
+
+            <!-- Campo da senha com limite de 10 caracteres -->
+            <input type="password" placeholder="Senha" maxlength="10">
+
+            <!-- Botão de enviar -->
+            <button type="submit">Cadastrar</button>
+
+        </form>
+
+        <!-- Link para voltar ao login -->
+        <p class="link">
+            Já tem conta?
+            <a href="index.html">Faça login</a>
+        </p>
+
+    </div>
+</body>
+</html>
