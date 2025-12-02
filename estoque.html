@@ -1,114 +1,204 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Controle de Estoque</title>
-<link rel="stylesheet" href="style.css">
+
+<!-- Estilos apenas para o app de estoque; alto escopo com #estoque-app para evitar conflitos -->
+<style>
+  /* escopo principal */
+  #estoque-app{font-family:Arial,Helvetica,sans-serif;min-height:100vh;padding:18px;background:linear-gradient(180deg,#f3f7fb,#e9f2ff);box-sizing:border-box}
+
+  /* container da aplicação */
+  #estoque-app .container{max-width:1100px;margin:12px auto;display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start}
+
+  /* responsivo */
+  @media (max-width:880px){#estoque-app .container{grid-template-columns:1fr;padding:12px}}
+
+  /* cartão */
+  #estoque-app .card{background:#ffffff;border-radius:12px;padding:16px;box-shadow:0 10px 28px rgba(2,6,23,0.06)}
+
+  /* cabeçalho */
+  #estoque-app .page-header{max-width:1100px;margin:6px auto 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  #estoque-app .page-header h1{font-size:20px;color:#04224b;margin:0}
+  #estoque-app .page-header .actions a{display:inline-block;padding:8px 12px;border-radius:10px;background:rgba(0,0,0,0.04);text-decoration:none;color:#04224b;font-weight:700}
+
+  /* título do card */
+  #estoque-app .card h3{color:#0b5ed7;margin:0 0 10px 0}
+
+  /* busca */
+  #estoque-app .search{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef;margin-bottom:10px}
+
+  /* tabela */
+  #estoque-app .table-wrap{overflow:auto}
+  #estoque-app table{width:100%;border-collapse:collapse;background:transparent}
+  #estoque-app th,#estoque-app td{padding:10px 8px;border-bottom:1px solid #f2f5f9;font-size:14px;text-align:left}
+  #estoque-app th{color:#0b5ed7;font-weight:700;font-size:13px}
+  #estoque-app .badge{display:inline-block;padding:4px 8px;border-radius:8px;background:#dc2626;color:white;font-size:12px;font-weight:700}
+
+  /* botões de ação */
+  #estoque-app .actions button{padding:6px 8px;margin-right:6px;border-radius:8px;border:1px solid #e6e9ef;background:white;cursor:pointer;font-size:13px}
+  #estoque-app .actions button:hover{box-shadow:0 8px 20px rgba(2,6,23,0.06)}
+
+  /* formulário lateral */
+  #estoque-app .form-estoque label{display:block;color:#6b7280;margin-top:8px;font-size:13px}
+  #estoque-app .form-estoque input[type="text"],#estoque-app .form-estoque input[type="number"]{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef;margin-top:6px}
+  #estoque-app .form-estoque button{width:100%;margin-top:12px;padding:10px;border-radius:8px;border:0;background:#0b5ed7;color:#fff;font-weight:700;cursor:pointer}
+  #estoque-app .form-estoque button:hover{background:#0646b0}
+
+  /* pequenos ajustes em telas bem pequenas */
+  @media (max-width:480px){
+    #estoque-app th,#estoque-app td{font-size:13px;padding:8px}
+    #estoque-app .page-header h1{font-size:18px}
+  }
+</style>
 </head>
 <body>
 
+<div id="estoque-app">
   <header class="page-header">
     <h1>Sistema de Controle de Estoque</h1>
-    <div class="actions">
-      <a href="index.html">Sair</a>
-    </div>
+    <div class="actions"><a href="index.html">Voltar</a></div>
   </header>
 
-  <main class="page-estoque">
-    <div class="card">
-        <h3>Produtos</h3>
-        <input id="search" class="search" placeholder="Pesquisar produto...">
+  <main class="container">
 
-        <div class="table-wrap">
+    <!-- Lista de produtos -->
+    <section class="card">
+      <h3>Produtos</h3>
+      <input id="search" class="search" placeholder="Pesquisar produto...">
+      <div class="table-wrap">
         <table>
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Qtd</th>
-                    <th>Mínimo</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody id="tbody"></tbody>
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Qtd</th>
+              <th>Mínimo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
         </table>
-        </div>
-    </div>
+      </div>
+      <small id="info" style="display:block;margin-top:8px;color:#6b7280"></small>
+    </section>
 
-    <div class="card">
-        <h3>Novo Produto</h3>
+    <!-- Formulário lateral -->
+    <aside class="card">
+      <h3>Novo Produto</h3>
+      <div class="form-estoque">
+        <label for="name">Nome</label>
+        <input id="name" type="text" placeholder="Ex: Parafuso M4">
 
-        <div class="form-estoque">
-            <label>Nome</label>
-            <input id="name" type="text">
+        <label for="qty">Quantidade</label>
+        <input id="qty" type="number" min="0" value="0">
 
-            <label>Quantidade</label>
-            <input id="qty" type="number" min="0" value="0">
+        <label for="min">Quantidade mínima</label>
+        <input id="min" type="number" min="0" value="5">
 
-            <label>Quantidade mínima</label>
-            <input id="min" type="number" min="0" value="5">
-
-            <button onclick="addProduct()">Adicionar Produto</button>
-        </div>
-    </div>
+        <button id="btnAdd">Adicionar Produto</button>
+      </div>
+    </aside>
 
   </main>
+</div>
 
+<!-- JS (mesmo comportamento do seu) -->
 <script>
-let products = JSON.parse(localStorage.getItem("estoque_v2") || "[]");
-function save(){ localStorage.setItem("estoque_v2", JSON.stringify(products)); }
-function render(){
-    let tbody = document.getElementById("tbody");
+(function(){
+  // usar nome de chave único para evitar conflito com outros scripts
+  const STORAGE_KEY = "estoque_v2";
+  let products = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+  const tbody = document.getElementById("tbody");
+  const searchEl = document.getElementById("search");
+  const infoEl = document.getElementById("info");
+  const nameEl = document.getElementById("name");
+  const qtyEl = document.getElementById("qty");
+  const minEl = document.getElementById("min");
+  const btnAdd = document.getElementById("btnAdd");
+
+  function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(products)); }
+
+  function render(){
     tbody.innerHTML = "";
-    let search = document.getElementById("search").value.toLowerCase();
+    let search = (searchEl.value || "").toLowerCase();
+    if(!products.length){
+      infoEl.textContent = "Nenhum produto cadastrado.";
+    } else {
+      infoEl.textContent = products.length + " produto(s) no estoque.";
+    }
+
     products.forEach(p=>{
-        if(!p.name.toLowerCase().includes(search)) return;
-        let tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${p.name} ${p.qty <= p.min ? "<span class='badge'>Baixo</span>" : ""}</td>
-            <td>${p.qty}</td>
-            <td>${p.min}</td>
-            <td class="actions">
-                <button onclick="alter('${p.id}',1)">+ Entrada</button>
-                <button onclick="alter('${p.id}',-1)">- Saída</button>
-                <button onclick="removeP('${p.id}')">Excluir</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
+      if(search && !p.name.toLowerCase().includes(search)) return;
+      let tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(p.name)} ${p.qty <= p.min ? "<span class='badge'>Baixo</span>" : ""}</td>
+        <td>${p.qty}</td>
+        <td>${p.min}</td>
+        <td class="actions">
+          <button data-id="${p.id}" data-type="in">+ Entrada</button>
+          <button data-id="${p.id}" data-type="out">- Saída</button>
+          <button data-id="${p.id}" data-type="del">Excluir</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
     });
-}
-function addProduct(){
-    let name = document.getElementById("name").value.trim();
-    let qty = Number(document.getElementById("qty").value);
-    let min = Number(document.getElementById("min").value);
-    if(name === "") return alert("Digite um nome!");
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]); });
+  }
+
+  function addProduct(){
+    const name = (nameEl.value||"").trim();
+    const qty = Number(qtyEl.value || 0);
+    const min = Number(minEl.value || 0);
+    if(!name) return alert("Digite um nome!");
     products.push({ id: Math.random().toString(36).substr(2,9), name, qty, min });
     save();
     render();
-    document.getElementById("name").value="";
-    document.getElementById("qty").value=0;
-    document.getElementById("min").value=5;
-}
-function alter(id, type){
-    let p = products.find(x=>x.id === id);
+    nameEl.value = ""; qtyEl.value = 0; minEl.value = 5;
+  }
+
+  function alter(id, type){
+    const p = products.find(x=>x.id === id);
     if(!p) return;
-    let value = prompt(type>0 ? "Quantidade de entrada:" : "Quantidade de saída:");
+    const promptText = type === "in" ? "Quantidade de entrada:" : "Quantidade de saída:";
+    const value = prompt(promptText);
     if(value === null) return;
-    let n = Number(value);
+    const n = Number(value);
     if(isNaN(n) || n <= 0) return alert("Número inválido!");
-    if(type < 0 && n > p.qty) return alert("Quantidade insuficiente!");
-    p.qty += n * type;
+    if(type === "out" && n > p.qty) return alert("Quantidade insuficiente!");
+    p.qty += (type === "in" ? n : -n);
     save();
     render();
-}
-function removeP(id){
+  }
+
+  function removeP(id){
     if(!confirm("Excluir produto?")) return;
     products = products.filter(p=>p.id !== id);
     save();
     render();
-}
-document.getElementById("search").addEventListener("input", render);
-render();
+  }
+
+  // delegação de eventos para ações da tabela
+  tbody.addEventListener("click", function(e){
+    const btn = e.target.closest("button");
+    if(!btn) return;
+    const id = btn.getAttribute("data-id");
+    const type = btn.getAttribute("data-type");
+    if(type === "in" || type === "out") alter(id, type);
+    if(type === "del") removeP(id);
+  });
+
+  btnAdd.addEventListener("click", function(e){ e.preventDefault(); addProduct(); });
+  searchEl.addEventListener("input", render);
+
+  // render inicial
+  render();
+})();
 </script>
 
 </body>
