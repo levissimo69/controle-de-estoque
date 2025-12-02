@@ -1,40 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cadastro</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <div class="container">
-
-        <h1>Crie sua conta</h1>
-        <p>Preencha os dados corretamente</p>
-
-        <form action="estoque.html" class="form">
-
-            <input type="text" placeholder="Nome completo" required>
-
-            <input type="email" placeholder="E-mail" maxlength="20" required>
-
-            <input type="text" placeholder="Usuário" maxlength="16" required>
-
-            <input type="password" placeholder="Senha" maxlength="10" required>
-
-            <button type="submit">Cadastrar</button>
-
-        </form>
-
-        <p class="link">
-            Já tem conta?
-            <a href="index.html">Faça login</a>
-        </p>
-
+  <div class="auth-wrapper card">
+    <div class="auth-top">
+      <h1>Crie sua conta</h1>
+      <p>Preencha os dados corretamente</p>
     </div>
+
+    <div class="auth-body">
+      <form action="estoque.html" class="form" autocomplete="off">
+        <input type="text" placeholder="Nome completo" name="nome" required>
+        <input type="email" placeholder="E-mail" name="email" maxlength="60" required>
+        <input type="text" placeholder="Usuário" name="user" maxlength="16" required>
+        <input type="password" placeholder="Senha" name="pass" maxlength="10" required>
+        <button type="submit">Cadastrar</button>
+      </form>
+
+      <p class="link">Já tem conta? <a href="index.html">Faça login</a></p>
+    </div>
+  </div>
 
 </body>
 </html>
