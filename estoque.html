@@ -4,23 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Controle de Estoque</title>
-
-<style>
-/* (todo o seu CSS aqui, idêntico ao que você enviou) */
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<h1>Sistema de Controle de Estoque</h1>
+  <header class="page-header">
+    <h1>Sistema de Controle de Estoque</h1>
+    <div class="actions">
+      <a href="index.html">Sair</a>
+    </div>
+  </header>
 
-<div class="container">
-
+  <main class="page-estoque">
     <div class="card">
-        <h3 style="color:var(--accent-dark);margin-bottom:10px;">Produtos</h3>
+        <h3>Produtos</h3>
+        <input id="search" class="search" placeholder="Pesquisar produto...">
 
-        <input id="search" placeholder="Pesquisar produto..." style="border-color:var(--accent-light)">
-
+        <div class="table-wrap">
         <table>
             <thead>
                 <tr>
@@ -32,27 +32,83 @@
             </thead>
             <tbody id="tbody"></tbody>
         </table>
+        </div>
     </div>
 
     <div class="card">
-        <h3 style="color:var(--accent-dark);">Novo Produto</h3>
+        <h3>Novo Produto</h3>
 
-        <label>Nome</label>
-        <input id="name">
+        <div class="form-estoque">
+            <label>Nome</label>
+            <input id="name" type="text">
 
-        <label>Quantidade</label>
-        <input id="qty" type="number" min="0" value="0">
+            <label>Quantidade</label>
+            <input id="qty" type="number" min="0" value="0">
 
-        <label>Quantidade mínima</label>
-        <input id="min" type="number" min="0" value="5">
+            <label>Quantidade mínima</label>
+            <input id="min" type="number" min="0" value="5">
 
-        <button onclick="addProduct()">Adicionar Produto</button>
+            <button onclick="addProduct()">Adicionar Produto</button>
+        </div>
     </div>
 
-</div>
+  </main>
 
 <script>
-/* (todo o seu JS aqui, idêntico ao que você enviou) */
+let products = JSON.parse(localStorage.getItem("estoque_v2") || "[]");
+function save(){ localStorage.setItem("estoque_v2", JSON.stringify(products)); }
+function render(){
+    let tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
+    let search = document.getElementById("search").value.toLowerCase();
+    products.forEach(p=>{
+        if(!p.name.toLowerCase().includes(search)) return;
+        let tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${p.name} ${p.qty <= p.min ? "<span class='badge'>Baixo</span>" : ""}</td>
+            <td>${p.qty}</td>
+            <td>${p.min}</td>
+            <td class="actions">
+                <button onclick="alter('${p.id}',1)">+ Entrada</button>
+                <button onclick="alter('${p.id}',-1)">- Saída</button>
+                <button onclick="removeP('${p.id}')">Excluir</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+function addProduct(){
+    let name = document.getElementById("name").value.trim();
+    let qty = Number(document.getElementById("qty").value);
+    let min = Number(document.getElementById("min").value);
+    if(name === "") return alert("Digite um nome!");
+    products.push({ id: Math.random().toString(36).substr(2,9), name, qty, min });
+    save();
+    render();
+    document.getElementById("name").value="";
+    document.getElementById("qty").value=0;
+    document.getElementById("min").value=5;
+}
+function alter(id, type){
+    let p = products.find(x=>x.id === id);
+    if(!p) return;
+    let value = prompt(type>0 ? "Quantidade de entrada:" : "Quantidade de saída:");
+    if(value === null) return;
+    let n = Number(value);
+    if(isNaN(n) || n <= 0) return alert("Número inválido!");
+    if(type < 0 && n > p.qty) return alert("Quantidade insuficiente!");
+    p.qty += n * type;
+    save();
+    render();
+}
+function removeP(id){
+    if(!confirm("Excluir produto?")) return;
+    products = products.filter(p=>p.id !== id);
+    save();
+    render();
+}
+document.getElementById("search").addEventListener("input", render);
+render();
 </script>
 
 </body>
